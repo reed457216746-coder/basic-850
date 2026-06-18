@@ -112,6 +112,17 @@ function voiceName() {
 }
 
 let audioContext;
+const SOUND_FILES = {
+  known: './assets/sounds/known.mp3?v=custom-20260618',
+  unsure: './assets/sounds/unsure.mp3?v=custom-20260618',
+  reveal: './assets/sounds/reveal.mp3?v=custom-20260618',
+  correct: './assets/sounds/correct.mp3?v=custom-20260618',
+  wrong: './assets/sounds/wrong.mp3?v=custom-20260618',
+  milestone5: './assets/sounds/milestone-5.mp3?v=custom-20260618',
+  milestone15: './assets/sounds/milestone-15.mp3?v=custom-20260618',
+};
+
+const soundCache = new Map();
 
 function getAudioContext() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -134,8 +145,7 @@ function playTone(ctx, { start, frequency, duration, type = 'sine', gain = 0.045
   oscillator.stop(start + duration + 0.015);
 }
 
-function playSound(kind) {
-  if (!state.progress.soundEnabled) return;
+function playGeneratedSound(kind) {
   const ctx = getAudioContext();
   if (!ctx) return;
   const now = ctx.currentTime;
@@ -151,14 +161,38 @@ function playSound(kind) {
       { start: now + 0.055, frequency: 990, duration: 0.12 },
     ],
     wrong: [{ start: now, frequency: 220, duration: 0.11, type: 'triangle', gain: 0.026 }],
-    milestone: [
+    milestone5: [
       { start: now, frequency: 660, duration: 0.07 },
       { start: now + 0.065, frequency: 880, duration: 0.08 },
       { start: now + 0.135, frequency: 1175, duration: 0.13 },
     ],
+    milestone15: [
+      { start: now, frequency: 660, duration: 0.07 },
+      { start: now + 0.065, frequency: 880, duration: 0.08 },
+      { start: now + 0.135, frequency: 1175, duration: 0.13 },
+      { start: now + 0.23, frequency: 1320, duration: 0.16 },
+    ],
     toggle: [{ start: now, frequency: 470, duration: 0.05, type: 'triangle', gain: 0.026 }],
   };
   (patterns[kind] || []).forEach((tone) => playTone(ctx, tone));
+}
+
+function playSound(kind) {
+  if (!state.progress.soundEnabled) return;
+  const source = SOUND_FILES[kind];
+  if (!source) {
+    playGeneratedSound(kind);
+    return;
+  }
+
+  if (!soundCache.has(kind)) {
+    const audio = new Audio(source);
+    audio.preload = 'auto';
+    soundCache.set(kind, audio);
+  }
+
+  const sound = soundCache.get(kind).cloneNode();
+  sound.play().catch(() => playGeneratedSound(kind));
 }
 
 function render() {
@@ -924,7 +958,10 @@ function markAndAdvance(status) {
   updateWord(currentId, status);
   if (status === 'known') {
     const knownAfter = knownSet().size;
-    playSound(knownAfter > knownBefore && knownAfter % 5 === 0 ? 'milestone' : 'known');
+    let milestoneSound = 'known';
+    if (knownAfter > knownBefore && knownAfter % 15 === 0) milestoneSound = 'milestone15';
+    else if (knownAfter > knownBefore && knownAfter % 5 === 0) milestoneSound = 'milestone5';
+    playSound(milestoneSound);
   }
   if (status === 'unsure') playSound('unsure');
   if (state.tab === 'review') {
