@@ -1,4 +1,4 @@
-import { groups, words } from './wordData.js';
+import { groups, words } from './wordData.js?v=data-20260618';
 
 const STORE_KEY = 'basic-850-progress-v1';
 const root = document.getElementById('root');
@@ -390,6 +390,76 @@ const exampleBank = {
 };
 
 const operationExampleBank = {
+  at: [
+    { label: '基础理解', en: 'Meet me at the door.', zh: '在门口见我。' },
+    { label: '生活场景', en: 'I am at home now.', zh: '我现在在家。' },
+    { label: '问句练习', en: 'Are you at school?', zh: '你在学校吗？' },
+    { label: '常见搭配', en: 'Look at the picture.', zh: '看这张图片。' },
+    { label: '对比感知', en: 'At points to a place or time.', zh: 'at 指向某个地点或时间点。' },
+  ],
+  by: [
+    { label: '基础理解', en: 'The chair is by the window.', zh: '椅子在窗边。' },
+    { label: '生活场景', en: 'I go to school by bus.', zh: '我坐公交去学校。' },
+    { label: '问句练习', en: 'Can you stand by me?', zh: '你能站在我旁边吗？' },
+    { label: '常见搭配', en: 'The book was written by her father.', zh: '这本书是她父亲写的。' },
+    { label: '对比感知', en: 'By can show place, method, or maker.', zh: 'by 可以表示位置、方式或作者。' },
+  ],
+  in: [
+    { label: '基础理解', en: 'The key is in the box.', zh: '钥匙在盒子里。' },
+    { label: '生活场景', en: 'She lives in a small town.', zh: '她住在一个小镇里。' },
+    { label: '问句练习', en: 'Is there milk in the cup?', zh: '杯子里有牛奶吗？' },
+    { label: '常见搭配', en: 'Write your name in this space.', zh: '在这个空白处写你的名字。' },
+    { label: '对比感知', en: 'In often means inside something.', zh: 'in 通常表示在某物里面。' },
+  ],
+  on: [
+    { label: '基础理解', en: 'The book is on the table.', zh: '书在桌子上。' },
+    { label: '生活场景', en: 'Put your coat on the chair.', zh: '把外套放在椅子上。' },
+    { label: '问句练习', en: 'Is the light on?', zh: '灯开着吗？' },
+    { label: '常见搭配', en: 'She is on the phone.', zh: '她正在打电话。' },
+    { label: '对比感知', en: 'On can mean touching a surface or working.', zh: 'on 可以表示在表面上，也可以表示开启。' },
+  ],
+  to: [
+    { label: '基础理解', en: 'Go to the door.', zh: '走到门那里。' },
+    { label: '生活场景', en: 'Give the letter to your mother.', zh: '把信给你妈妈。' },
+    { label: '问句练习', en: 'Are you going to school?', zh: '你要去学校吗？' },
+    { label: '常见搭配', en: 'Listen to the music.', zh: '听音乐。' },
+    { label: '对比感知', en: 'To often shows direction or receiver.', zh: 'to 常表示方向或接受者。' },
+  ],
+  up: [
+    { label: '基础理解', en: 'Look up at the sky.', zh: '抬头看天空。' },
+    { label: '生活场景', en: 'Stand up, please.', zh: '请站起来。' },
+    { label: '问句练习', en: 'Can you pick it up?', zh: '你能把它捡起来吗？' },
+    { label: '常见搭配', en: 'The price went up.', zh: '价格上涨了。' },
+    { label: '对比感知', en: 'Up often means higher or more.', zh: 'up 常表示更高或更多。' },
+  ],
+  for: [
+    { label: '基础理解', en: 'This seat is for you.', zh: '这个座位是给你的。' },
+    { label: '生活场景', en: 'I waited for my friend.', zh: '我等我的朋友。' },
+    { label: '问句练习', en: 'What is this key for?', zh: '这把钥匙是做什么用的？' },
+    { label: '常见搭配', en: 'Thank you for your help.', zh: '谢谢你的帮助。' },
+    { label: '对比感知', en: 'For can show purpose, reason, or receiver.', zh: 'for 可以表示目的、原因或对象。' },
+  ],
+  of: [
+    { label: '基础理解', en: 'I need a cup of water.', zh: '我需要一杯水。' },
+    { label: '生活场景', en: 'The top of the box is open.', zh: '盒子的顶部是开的。' },
+    { label: '问句练习', en: 'What is the name of this street?', zh: '这条街叫什么名字？' },
+    { label: '常见搭配', en: 'She is a friend of my sister.', zh: '她是我姐姐的朋友。' },
+    { label: '对比感知', en: 'Of often shows a part, amount, or relation.', zh: 'of 常表示部分、数量或关系。' },
+  ],
+  as: [
+    { label: '基础理解', en: 'Use this room as an office.', zh: '把这个房间当作办公室用。' },
+    { label: '生活场景', en: 'She works as a teacher.', zh: '她是一名教师。' },
+    { label: '问句练习', en: 'Can I use this box as a seat?', zh: '我能把这个盒子当座位用吗？' },
+    { label: '常见搭配', en: 'As a child, he lived by the sea.', zh: '小时候，他住在海边。' },
+    { label: '对比感知', en: 'As can show role, use, or time.', zh: 'as 可以表示角色、用途或时间。' },
+  ],
+  off: [
+    { label: '基础理解', en: 'Take your coat off.', zh: '脱掉你的外套。' },
+    { label: '生活场景', en: 'The cup fell off the table.', zh: '杯子从桌上掉下来了。' },
+    { label: '问句练习', en: 'Is the light off?', zh: '灯关了吗？' },
+    { label: '常见搭配', en: 'Keep off the wet floor.', zh: '不要踩湿地板。' },
+    { label: '对比感知', en: 'Off can mean away from or not working.', zh: 'off 可以表示离开，也可以表示关闭。' },
+  ],
   about: [
     { label: '基础理解', en: 'This book is about animals.', zh: '这本书是关于动物的。' },
     { label: '生活场景', en: 'We talked about the weather.', zh: '我们聊了天气。' },
@@ -486,6 +556,201 @@ const prepositionScenes = {
   as: ['Use this room as an office.', '把这个房间当作办公室用。'],
 };
 
+const specificNounExamples = {
+  army: [
+    { label: '基础理解', en: 'The army protects the country.', zh: '军队保卫这个国家。' },
+    { label: '生活场景', en: 'His brother is in the army.', zh: '他的哥哥在军队里。' },
+    { label: '问句练习', en: 'Does the army need more food?', zh: '军队需要更多食物吗？' },
+    { label: '常见搭配', en: 'The army moved across the bridge.', zh: '军队穿过了那座桥。' },
+    { label: '对比感知', en: 'An army is a group of soldiers, not one person.', zh: 'army 是一支军队，不是一个人。' },
+  ],
+  church: [
+    { label: '基础理解', en: 'The church is near the square.', zh: '教堂在广场附近。' },
+    { label: '生活场景', en: 'We heard bells from the church.', zh: '我们听到了教堂传来的钟声。' },
+    { label: '问句练习', en: 'Is the church open today?', zh: '教堂今天开放吗？' },
+    { label: '常见搭配', en: 'They met outside the church door.', zh: '他们在教堂门外见面。' },
+    { label: '对比感知', en: 'A church is a building, not just a room.', zh: 'church 是一座建筑，不只是一个房间。' },
+  ],
+  hospital: [
+    { label: '基础理解', en: 'The hospital is on this road.', zh: '医院在这条路上。' },
+    { label: '生活场景', en: 'She works at the hospital.', zh: '她在医院工作。' },
+    { label: '问句练习', en: 'How far is the hospital?', zh: '医院有多远？' },
+    { label: '常见搭配', en: 'He went to the hospital after the accident.', zh: '事故后他去了医院。' },
+    { label: '对比感知', en: 'A hospital is for medical care, not ordinary shopping.', zh: 'hospital 是医疗护理的地方，不是普通购物的地方。' },
+  ],
+};
+
+const abstractNouns = new Set([
+  'addition', 'adjustment', 'agreement', 'amount', 'approval', 'argument', 'attempt', 'attention',
+  'attraction', 'authority', 'behavior', 'belief', 'cause', 'chance', 'comparison', 'competition',
+  'condition', 'connection', 'control', 'credit', 'crime', 'damage', 'danger', 'death', 'debt',
+  'decision', 'degree', 'desire', 'destruction', 'development', 'digestion', 'direction', 'discovery',
+  'discussion', 'disease', 'disgust', 'distribution', 'division', 'doubt', 'education', 'effect',
+  'error', 'event', 'exchange', 'existence', 'expansion', 'experience', 'fact', 'fear', 'feeling',
+  'fiction', 'force', 'growth', 'harmony', 'hate', 'hearing', 'help', 'history', 'hope', 'humor',
+  'idea', 'impulse', 'increase', 'insurance', 'interest', 'invention', 'knowledge', 'language',
+  'law', 'learning', 'limit', 'loss', 'love', 'memory', 'motion', 'music', 'need', 'news',
+  'observation', 'operation', 'opinion', 'organization', 'pain', 'payment', 'peace', 'pleasure',
+  'position', 'power', 'profit', 'property', 'punishment', 'purpose', 'quality', 'question',
+  'reaction', 'reading', 'reason', 'regret', 'relation', 'religion', 'request', 'respect', 'reward',
+  'rhythm', 'rule', 'science', 'selection', 'sense', 'shame', 'shock', 'society', 'sound',
+  'space', 'statement', 'structure', 'substance', 'suggestion', 'support', 'surprise', 'teaching',
+  'tendency', 'theory', 'thought', 'time', 'trade', 'trouble', 'use', 'value', 'view', 'voice',
+  'war', 'waste', 'weather', 'weight', 'work', 'writing',
+]);
+
+const actionNouns = new Set([
+  'act', 'attack', 'bite', 'blow', 'burn', 'burst', 'change', 'cook', 'cough', 'cover', 'crack',
+  'crush', 'cry', 'drink', 'driving', 'fall', 'fight', 'flight', 'fold', 'grip', 'guide', 'join',
+  'judge', 'jump', 'kick', 'kiss', 'laugh', 'lead', 'lift', 'look', 'measure', 'meeting', 'move',
+  'offer', 'paint', 'play', 'polish', 'print', 'protest', 'pull', 'push', 'rest', 'roll', 'rub',
+  'run', 'shake', 'slip', 'smash', 'smell', 'smile', 'smoke', 'sneeze', 'start', 'stop', 'stretch',
+  'swim', 'talk', 'taste', 'test', 'touch', 'transport', 'trick', 'turn', 'twist', 'walk', 'wash',
+  'wave',
+]);
+
+const specificQualityExamples = {
+  boiling: [
+    { label: '基础理解', en: 'The water is boiling.', zh: '水正在沸腾。' },
+    { label: '生活场景', en: 'Keep your hand away from boiling water.', zh: '手不要靠近沸水。' },
+    { label: '问句练习', en: 'Is the soup boiling?', zh: '汤烧开了吗？' },
+    { label: '常见搭配', en: 'Boiling water can burn skin.', zh: '沸水会烫伤皮肤。' },
+    { label: '对比感知', en: 'Boiling is hotter than warm.', zh: 'boiling 比 warm 热得多。' },
+  ],
+  chemical: [
+    { label: '基础理解', en: 'This is a chemical change.', zh: '这是化学变化。' },
+    { label: '生活场景', en: 'The bottle has a chemical smell.', zh: '这个瓶子有化学气味。' },
+    { label: '问句练习', en: 'Is this chemical safe?', zh: '这个化学品安全吗？' },
+    { label: '常见搭配', en: 'Chemical waste can damage water.', zh: '化学废料会污染水。' },
+    { label: '对比感知', en: 'Chemical points to chemistry or a substance.', zh: 'chemical 指化学相关，或化学物质。' },
+  ],
+  electric: [
+    { label: '基础理解', en: 'This is an electric light.', zh: '这是一盏电灯。' },
+    { label: '生活场景', en: 'The electric train is quiet.', zh: '电动火车很安静。' },
+    { label: '问句练习', en: 'Is this machine electric?', zh: '这台机器是电动的吗？' },
+    { label: '常见搭配', en: 'An electric wire can be dangerous.', zh: '电线可能很危险。' },
+    { label: '对比感知', en: 'Electric means using or carrying electricity.', zh: 'electric 表示使用或传导电。' },
+  ],
+  medical: [
+    { label: '基础理解', en: 'She needs medical help.', zh: '她需要医疗帮助。' },
+    { label: '生活场景', en: 'The hospital keeps medical records.', zh: '医院保存医疗记录。' },
+    { label: '问句练习', en: 'Is this a medical problem?', zh: '这是医疗问题吗？' },
+    { label: '常见搭配', en: 'Medical care is important after an accident.', zh: '事故后的医疗护理很重要。' },
+    { label: '对比感知', en: 'Medical relates to health and doctors.', zh: 'medical 和健康、医生有关。' },
+  ],
+  military: [
+    { label: '基础理解', en: 'The army has military training.', zh: '军队有军事训练。' },
+    { label: '生活场景', en: 'He works at a military base.', zh: '他在军事基地工作。' },
+    { label: '问句练习', en: 'Is this a military road?', zh: '这是军用道路吗？' },
+    { label: '常见搭配', en: 'Military service can be difficult.', zh: '服兵役可能很辛苦。' },
+    { label: '对比感知', en: 'Military relates to soldiers and the army.', zh: 'military 和士兵、军队有关。' },
+  ],
+  political: [
+    { label: '基础理解', en: 'This is a political question.', zh: '这是一个政治问题。' },
+    { label: '生活场景', en: 'The news has a political story.', zh: '新闻里有一则政治故事。' },
+    { label: '问句练习', en: 'Is the meeting political?', zh: '这场会议有政治性质吗？' },
+    { label: '常见搭配', en: 'Political power can change a country.', zh: '政治权力会改变一个国家。' },
+    { label: '对比感知', en: 'Political relates to government and public power.', zh: 'political 和政府、公共权力有关。' },
+  ],
+  opposite: [
+    { label: '基础理解', en: 'The two doors are opposite each other.', zh: '两扇门彼此相对。' },
+    { label: '生活场景', en: 'The bank is on the opposite side of the street.', zh: '银行在街道对面。' },
+    { label: '问句练习', en: 'What is the opposite of hot?', zh: 'hot 的反义词是什么？' },
+    { label: '常见搭配', en: 'They walked in opposite directions.', zh: '他们朝相反方向走。' },
+    { label: '对比感知', en: 'Opposite means very different or facing the other side.', zh: 'opposite 表示相反，或面对另一边。' },
+  ],
+};
+
+const colorWords = new Set(['black', 'blue', 'brown', 'green', 'grey', 'red', 'white', 'yellow']);
+const temperatureWords = new Set(['cold', 'hot', 'warm', 'wet', 'dry']);
+const personStateWords = new Set([
+  'able', 'angry', 'awake', 'conscious', 'cruel', 'foolish', 'happy', 'healthy', 'ill', 'kind',
+  'living', 'married', 'sad', 'tired', 'violent', 'wise', 'young',
+]);
+const relationWords = new Set(['different', 'equal', 'parallel', 'same', 'separate']);
+const orderTimeWords = new Set(['early', 'first', 'future', 'last', 'late', 'past', 'present', 'second']);
+const domainWords = new Set(['chemical', 'electric', 'material', 'medical', 'military', 'natural', 'physical', 'political']);
+const textureShapeWords = new Set([
+  'bent', 'broken', 'complete', 'delicate', 'elastic', 'fat', 'fixed', 'flat', 'hanging', 'hollow',
+  'long', 'loose', 'narrow', 'open', 'round', 'rough', 'sharp', 'short', 'shut', 'small', 'smooth',
+  'soft', 'solid', 'sticky', 'stiff', 'straight', 'thick', 'thin', 'tight', 'wide',
+]);
+
+function qualityExamples(word, meaning) {
+  const article = articleFor(word);
+  if (specificQualityExamples[word]) return specificQualityExamples[word];
+  if (colorWords.has(word)) {
+    return [
+      { label: '基础理解', en: `The coat is ${word}.`, zh: `这件外套是“${meaning}”的。` },
+      { label: '生活场景', en: `I picked the ${word} cup.`, zh: `我选了那个“${meaning}”杯子。` },
+      { label: '问句练习', en: `Is your bag ${word}?`, zh: `你的包是“${meaning}”的吗？` },
+      { label: '常见搭配', en: `The ${word} sign is easy to see.`, zh: `那个“${meaning}”标志很容易看见。` },
+      { label: '对比感知', en: `${word} names a color, not a size.`, zh: `“${meaning}”表示颜色，不表示大小。` },
+    ];
+  }
+  if (temperatureWords.has(word)) {
+    return [
+      { label: '基础理解', en: `The water is ${word}.`, zh: `水是“${meaning}”的。` },
+      { label: '生活场景', en: `I need a ${word} drink.`, zh: `我需要一杯“${meaning}”饮料。` },
+      { label: '问句练习', en: `Is the room ${word}?`, zh: `房间是“${meaning}”的吗？` },
+      { label: '常见搭配', en: `A ${word} day can change our plan.`, zh: `“${meaning}”的一天会改变我们的计划。` },
+      { label: '对比感知', en: `${word} describes a condition you can feel.`, zh: `“${meaning}”描述能感受到的状态。` },
+    ];
+  }
+  if (personStateWords.has(word)) {
+    return [
+      { label: '基础理解', en: `The person is ${word}.`, zh: `这个人是“${meaning}”的。` },
+      { label: '生活场景', en: `She looked ${word} after the meeting.`, zh: `会议后她看起来很“${meaning}”。` },
+      { label: '问句练习', en: `Do you feel ${word} today?`, zh: `你今天感觉“${meaning}”吗？` },
+      { label: '常见搭配', en: `${article} ${word} person needs care.`, zh: `“${meaning}”的人需要关心。` },
+      { label: '对比感知', en: `${word} describes a person or living thing.`, zh: `“${meaning}”常描述人或有生命的东西。` },
+    ];
+  }
+  if (relationWords.has(word)) {
+    return [
+      { label: '基础理解', en: `The two lines are ${word}.`, zh: `这两条线是“${meaning}”的。` },
+      { label: '生活场景', en: `These two answers are ${word}.`, zh: `这两个答案是“${meaning}”的。` },
+      { label: '问句练习', en: `Are the two parts ${word}?`, zh: `这两个部分是“${meaning}”的吗？` },
+      { label: '常见搭配', en: `Keep the ideas ${word} in your notes.`, zh: `在笔记里让这些想法保持“${meaning}”。` },
+      { label: '对比感知', en: `${word} compares two things or ideas.`, zh: `“${meaning}”用来比较两个事物或想法。` },
+    ];
+  }
+  if (orderTimeWords.has(word)) {
+    return [
+      { label: '基础理解', en: `This is the ${word} step.`, zh: `这是“${meaning}”的一步。` },
+      { label: '生活场景', en: `We talked about the ${word} plan.`, zh: `我们谈到了“${meaning}”的计划。` },
+      { label: '问句练习', en: `Is this the ${word} page?`, zh: `这是“${meaning}”的一页吗？` },
+      { label: '常见搭配', en: `The ${word} part is easy to remember.`, zh: `“${meaning}”的部分容易记住。` },
+      { label: '对比感知', en: `${word} is about time or order.`, zh: `“${meaning}”和时间或顺序有关。` },
+    ];
+  }
+  if (domainWords.has(word)) {
+    return [
+      { label: '基础理解', en: `This is ${article} ${word} problem.`, zh: `这是一个“${meaning}”问题。` },
+      { label: '生活场景', en: `The report used ${word} words.`, zh: `这份报告用了“${meaning}”词汇。` },
+      { label: '问句练习', en: `Is this ${article} ${word} question?`, zh: `这是一个“${meaning}”问题吗？` },
+      { label: '常见搭配', en: `${article} ${word} change may need expert help.`, zh: `“${meaning}”变化可能需要专家帮助。` },
+      { label: '对比感知', en: `${word} points to a field or type.`, zh: `“${meaning}”指向某个领域或类型。` },
+    ];
+  }
+  if (textureShapeWords.has(word)) {
+    return [
+      { label: '基础理解', en: `The line is ${word}.`, zh: `这条线是“${meaning}”的。` },
+      { label: '生活场景', en: `The old box feels ${word}.`, zh: `这个旧盒子摸起来“${meaning}”。` },
+      { label: '问句练习', en: `Is the door ${word}?`, zh: `这扇门是“${meaning}”的吗？` },
+      { label: '常见搭配', en: `${article} ${word} edge can be dangerous.`, zh: `“${meaning}”的边缘可能很危险。` },
+      { label: '对比感知', en: `${word} describes shape, texture, or state.`, zh: `“${meaning}”描述形状、质感或状态。` },
+    ];
+  }
+  return [
+    { label: '基础理解', en: `The answer is ${word}.`, zh: `这个答案是“${meaning}”的。` },
+    { label: '生活场景', en: `This feels ${word} to me.`, zh: `我觉得这个是“${meaning}”的。` },
+    { label: '问句练习', en: `Is this choice ${word}?`, zh: `这个选择是“${meaning}”的吗？` },
+    { label: '常见搭配', en: `${article} ${word} change can affect the plan.`, zh: `“${meaning}”的变化会影响计划。` },
+    { label: '对比感知', en: `${word} describes a quality, not an object.`, zh: `“${meaning}”描述性质，不是物体。` },
+  ];
+}
+
 function articleFor(word) {
   return /^[aeiou]/i.test(word) ? 'an' : 'a';
 }
@@ -514,26 +779,39 @@ function getExamples(item) {
   const word = item.speakWord;
   if (exampleBank[word]) return exampleBank[word];
   if (operationExampleBank[word]) return operationExampleBank[word];
+  if (specificNounExamples[word]) return specificNounExamples[word];
   const meaning = item.zh.includes('词') ? item.word : item.zh;
   if (item.groupId === 'operations') return simpleOperationExamples(word, meaning);
   if (item.groupId === 'things' || item.groupId === 'pictured') {
     const article = articleFor(word);
+    if (abstractNouns.has(word)) {
+      return [
+        { label: '基础理解', en: `The ${word} is clear now.`, zh: `这个“${meaning}”现在清楚了。` },
+        { label: '生活场景', en: `We talked about the ${word} today.`, zh: `我们今天谈到了这个“${meaning}”。` },
+        { label: '问句练习', en: `What caused this ${word}?`, zh: `是什么造成了这个“${meaning}”？` },
+        { label: '常见搭配', en: `A good ${word} can change the result.`, zh: `好的“${meaning}”会改变结果。` },
+        { label: '对比感知', en: `This ${word} is an idea, not a thing you can hold.`, zh: `这个“${meaning}”是一个概念，不是能拿在手里的东西。` },
+      ];
+    }
+    if (actionNouns.has(word)) {
+      return [
+        { label: '基础理解', en: `The ${word} happened quickly.`, zh: `这个“${meaning}”发生得很快。` },
+        { label: '生活场景', en: `I saw the ${word} from the door.`, zh: `我从门口看到了这个“${meaning}”。` },
+        { label: '问句练习', en: `Did you notice the ${word}?`, zh: `你注意到这个“${meaning}”了吗？` },
+        { label: '常见搭配', en: `That ${word} made everyone stop.`, zh: `那个“${meaning}”让大家都停了下来。` },
+        { label: '对比感知', en: `The ${word} is an action, not a fixed object.`, zh: `这个“${meaning}”是动作，不是固定物体。` },
+      ];
+    }
     return [
-      { label: '基础理解', en: `The ${word} is important here.`, zh: `这个“${meaning}”在这里很重要。` },
-      { label: '生活场景', en: `I noticed ${article} ${word} today.`, zh: `我今天注意到了一个“${meaning}”。` },
+      { label: '基础理解', en: `This is ${article} ${word}.`, zh: `这是一个“${meaning}”。` },
+      { label: '生活场景', en: `The ${word} is on the table.`, zh: `这个“${meaning}”在桌子上。` },
       { label: '问句练习', en: `Where did you find the ${word}?`, zh: `你在哪里找到这个“${meaning}”？` },
-      { label: '常见搭配', en: `We talked about the ${word} for a minute.`, zh: `我们聊了一会儿这个“${meaning}”。` },
+      { label: '常见搭配', en: `Please put the ${word} in a safe place.`, zh: `请把这个“${meaning}”放在安全的地方。` },
       { label: '对比感知', en: `This ${word} is different from the other one.`, zh: `这个“${meaning}”和另一个不一样。` },
     ];
   }
   if (item.groupId === 'qualities' || item.groupId === 'opposites') {
-    return [
-      { label: '基础理解', en: `The room is ${word}.`, zh: `这个房间是“${meaning}”的。` },
-      { label: '生活场景', en: `I feel ${word} today.`, zh: `我今天感觉“${meaning}”。` },
-      { label: '问句练习', en: `Is this answer ${word}?`, zh: `这个答案是“${meaning}”的吗？` },
-      { label: '常见搭配', en: `A ${word} day can change your plan.`, zh: `“${meaning}”的一天会改变你的计划。` },
-      { label: '对比感知', en: `It is ${word}, not the same as before.`, zh: `它是“${meaning}”的，和以前不一样。` },
-    ];
+    return qualityExamples(word, meaning);
   }
   return [
     { label: '基础理解', en: `Use "${word}" in a short sentence.`, zh: `在短句里使用“${meaning}”。` },
