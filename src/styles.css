@@ -385,10 +385,19 @@ button {
   color: #55645b;
   font-size: 13px;
   line-height: 1.45;
+  min-height: 19px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease;
 }
 
 .example-item.open .example-main {
   background: #e8f4ed;
+}
+
+.example-item.open .example-main span {
+  opacity: 1;
+  visibility: visible;
 }
 
 .example-speak {

@@ -205,7 +205,6 @@ function renderStudyCard(word) {
         <button class="soft-action ${unsure ? 'selected' : ''}" type="button" data-action="${unsure ? 'clear' : 'unsure'}">${icon('star')} 不熟</button>
         <button class="primary-action ${known ? 'selected' : ''}" type="button" data-action="known">${icon('check')} 掌握</button>
       </div>
-      <button class="next-button" type="button" data-action="next">下一个 ${icon('next')}</button>
     </article>
   `;
 }
@@ -224,7 +223,7 @@ function renderExamples(word) {
               <button class="example-main" type="button" data-action="toggle-example" data-example-index="${index}">
                 <small>${example.label}</small>
                 <strong>${escapeHtml(example.en)}</strong>
-                ${state.openExampleIndex === index ? `<span>${escapeHtml(example.zh)}</span>` : ''}
+                <span>${escapeHtml(example.zh)}</span>
               </button>
               <button class="example-speak" type="button" data-action="speak-example" data-example-index="${index}" aria-label="播放例句 ${index + 1}">
                 ${icon('volume')}
@@ -456,6 +455,18 @@ function updateWord(id, status) {
   saveProgress();
 }
 
+function markAndAdvance(status) {
+  const currentId = activeWord().id;
+  updateWord(currentId, status);
+  if (state.tab === 'review') {
+    const list = reviewWords();
+    state.currentIndex = list.length ? state.currentIndex % list.length : 0;
+    state.openExampleIndex = null;
+    return;
+  }
+  nextWord();
+}
+
 function nextWord() {
   state.currentIndex = (state.currentIndex + 1) % Math.max(activeList().length, 1);
   state.testChoiceId = null;
@@ -532,8 +543,8 @@ root.addEventListener('click', (event) => {
     const example = getExamples(activeWord())[Number(button.dataset.exampleIndex || 0)];
     if (example) speakText(example.en);
   }
-  if (action === 'known') updateWord(activeWord().id, 'known');
-  if (action === 'unsure') updateWord(activeWord().id, 'unsure');
+  if (action === 'known') markAndAdvance('known');
+  if (action === 'unsure') markAndAdvance('unsure');
   if (action === 'clear') updateWord(activeWord().id, 'clear');
   if (action === 'choice') state.testChoiceId = button.dataset.choiceId;
   if (action === 'accent') {
