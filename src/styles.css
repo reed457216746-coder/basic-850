@@ -16,6 +16,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 button,
@@ -53,7 +54,7 @@ button {
 }
 
 .app-shell {
-  min-height: 100svh;
+  height: 100svh;
   display: grid;
   place-items: center;
   padding: 18px;
@@ -65,15 +66,23 @@ button {
 .phone-canvas {
   position: relative;
   width: min(100vw, 402px);
-  min-height: min(874px, 100svh);
-  max-height: 100svh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: max(18px, env(safe-area-inset-top)) 16px calc(84px + env(safe-area-inset-bottom));
+  height: min(874px, 100svh);
+  overflow: hidden;
+  padding: max(18px, env(safe-area-inset-top)) 16px 0;
   background: #f8fbf7;
   border: 1px solid rgba(41, 72, 53, 0.08);
   border-radius: 36px;
   box-shadow: 0 30px 80px rgba(30, 58, 42, 0.18);
+}
+
+.scroll-content {
+  height: calc(100svh - max(18px, env(safe-area-inset-top)) - 94px);
+  margin: 0 -16px;
+  padding: 0 16px 118px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
 .topbar {
@@ -671,6 +680,7 @@ button {
   right: 12px;
   bottom: max(10px, env(safe-area-inset-bottom));
   left: 12px;
+  z-index: 20;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;

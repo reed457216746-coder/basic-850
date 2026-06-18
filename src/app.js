@@ -126,21 +126,23 @@ function render() {
           <button class="icon-button warm" type="button" data-action="speak" aria-label="播放当前词">${icon('headphones')}</button>
         </header>
 
-        <section class="progress-panel">
-          <div class="progress-copy">
-            <span>今日进度</span>
-            <strong>${percent}%</strong>
-          </div>
-          <div class="progress-track" aria-label="已掌握 ${known.size} 个，共 ${words.length} 个">
-            <div style="width: ${percent}%"></div>
-          </div>
-          <div class="progress-stats">
-            <span>${known.size}/${words.length} 已掌握</span>
-            <span>${unsure.size} 个待复习</span>
-          </div>
-        </section>
+        <div class="scroll-content">
+          <section class="progress-panel">
+            <div class="progress-copy">
+              <span>今日进度</span>
+              <strong>${percent}%</strong>
+            </div>
+            <div class="progress-track" aria-label="已掌握 ${known.size} 个，共 ${words.length} 个">
+              <div style="width: ${percent}%"></div>
+            </div>
+            <div class="progress-stats">
+              <span>${known.size}/${words.length} 已掌握</span>
+              <span>${unsure.size} 个待复习</span>
+            </div>
+          </section>
 
-        ${renderCurrentTab()}
+          ${renderCurrentTab()}
+        </div>
 
         <nav class="bottom-nav" aria-label="底部导航">
           ${renderNavButton('learn', '学习', 'book')}
