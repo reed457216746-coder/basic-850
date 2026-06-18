@@ -391,11 +391,29 @@ function getExamples(item) {
   const word = item.speakWord;
   if (exampleBank[word]) return exampleBank[word];
   const meaning = item.zh.includes('词') ? item.word : item.zh;
+  if (item.groupId === 'things' || item.groupId === 'pictured') {
+    return [
+      { label: '基础理解', en: `This ${word} is useful.`, zh: `这个“${meaning}”很有用。` },
+      { label: '生活场景', en: `I see the ${word} every day.`, zh: `我每天都会看到这个“${meaning}”。` },
+      { label: '问句练习', en: `Where is the ${word}?`, zh: `这个“${meaning}”在哪里？` },
+      { label: '常见搭配', en: `Put the ${word} on the table.`, zh: `把这个“${meaning}”放在桌子上。` },
+      { label: '对比感知', en: `This is ${word}, not another thing.`, zh: `这是“${meaning}”，不是别的东西。` },
+    ];
+  }
+  if (item.groupId === 'qualities' || item.groupId === 'opposites') {
+    return [
+      { label: '基础理解', en: `The room is ${word}.`, zh: `这个房间是“${meaning}”的。` },
+      { label: '生活场景', en: `I feel ${word} today.`, zh: `我今天感觉“${meaning}”。` },
+      { label: '问句练习', en: `Is this answer ${word}?`, zh: `这个答案是“${meaning}”的吗？` },
+      { label: '常见搭配', en: `A ${word} day can change your plan.`, zh: `“${meaning}”的一天会改变你的计划。` },
+      { label: '对比感知', en: `It is ${word}, not the same as before.`, zh: `它是“${meaning}”的，和以前不一样。` },
+    ];
+  }
   return [
-    { label: '基础理解', en: `This word is "${word}".`, zh: `这个词是“${meaning}”。` },
-    { label: '生活场景', en: `I use "${word}" in a simple sentence.`, zh: `我把“${meaning}”放进一个简单句子里使用。` },
+    { label: '基础理解', en: `Use "${word}" in a short sentence.`, zh: `在短句里使用“${meaning}”。` },
+    { label: '生活场景', en: `I hear "${word}" in simple English.`, zh: `我在简单英语里听到“${meaning}”。` },
     { label: '问句练习', en: `Can you say "${word}" again?`, zh: `你能再说一遍“${meaning}”吗？` },
-    { label: '常见搭配', en: `The word "${word}" is useful.`, zh: `“${meaning}”这个词很有用。` },
+    { label: '常见搭配', en: `"${word}" often helps connect ideas.`, zh: `“${meaning}”常用来连接意思。` },
     { label: '对比感知', en: `Learn "${word}" today, and review it tomorrow.`, zh: `今天学习“${meaning}”，明天再复习它。` },
   ];
 }
