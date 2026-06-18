@@ -1,17 +1,19 @@
 import { groups, words } from './wordData.js';
 
 const STORE_KEY = 'basic-850-progress-v1';
+const root = document.getElementById('root');
+
 const state = {
   tab: 'learn',
   groupId: 'all',
   currentIndex: 0,
   query: '',
   testChoiceId: null,
+  openExampleIndex: null,
   voices: [],
+  notice: '',
   progress: readProgress(),
 };
-
-const root = document.getElementById('root');
 
 const icons = {
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h12"/></svg>',
@@ -28,14 +30,25 @@ const icons = {
   user: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/></svg>',
   chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17V9"/><path d="M13 17V5"/><path d="M18 17v-4"/></svg>',
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>',
+  download: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>',
+  upload: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>',
 };
 
 function readProgress() {
   try {
-    return JSON.parse(localStorage.getItem(STORE_KEY)) || { known: [], unsure: [], accent: 'en-US' };
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+    return normalizeProgress(saved);
   } catch {
-    return { known: [], unsure: [], accent: 'en-US' };
+    return normalizeProgress();
   }
+}
+
+function normalizeProgress(progress = {}) {
+  return {
+    known: Array.isArray(progress.known) ? progress.known.filter(Boolean) : [],
+    unsure: Array.isArray(progress.unsure) ? progress.unsure.filter(Boolean) : [],
+    accent: progress.accent === 'en-GB' ? 'en-GB' : 'en-US',
+  };
 }
 
 function saveProgress() {
@@ -85,16 +98,15 @@ function activeWord() {
   return list[state.currentIndex % Math.max(list.length, 1)] || words[0];
 }
 
-function voiceName() {
-  const voice = selectedVoice();
-  return voice ? voice.name : '系统语音';
-}
-
 function selectedVoice() {
   return (
     state.voices.find((voice) => voice.lang === state.progress.accent) ||
     state.voices.find((voice) => voice.lang?.startsWith(state.progress.accent))
   );
+}
+
+function voiceName() {
+  return selectedVoice()?.name || '系统语音';
 }
 
 function render() {
@@ -150,14 +162,13 @@ function renderCurrentTab() {
 
 function renderLearn() {
   const list = filteredWords();
-  const word = activeWord();
   return `
     <div class="search-row">
       ${icon('search')}
       <input value="${escapeHtml(state.query)}" data-action="search" placeholder="搜索单词 / 中文" aria-label="搜索单词或中文释义" />
     </div>
     ${renderCategoryTabs()}
-    ${renderStudyCard(word)}
+    ${renderStudyCard(activeWord())}
     ${renderWordRail(list.slice(0, 24))}
   `;
 }
@@ -187,16 +198,40 @@ function renderStudyCard(word) {
         <p>${word.ipa || 'IPA 待补充'}</p>
         <strong>${escapeHtml(word.zh)}</strong>
       </div>
-      <div class="example-line">
-        ${icon('sparkle')}
-        <span>${escapeHtml(makeExample(word.speakWord))}</span>
-      </div>
+      ${renderExamples(word)}
       <div class="action-grid">
         <button class="soft-action ${unsure ? 'selected' : ''}" type="button" data-action="${unsure ? 'clear' : 'unsure'}">${icon('star')} 不熟</button>
         <button class="primary-action ${known ? 'selected' : ''}" type="button" data-action="known">${icon('check')} 掌握</button>
       </div>
       <button class="next-button" type="button" data-action="next">下一个 ${icon('next')}</button>
     </article>
+  `;
+}
+
+function renderExamples(word) {
+  return `
+    <div class="examples-panel">
+      <div class="examples-title">
+        ${icon('sparkle')}
+        <span>应用例句</span>
+      </div>
+      ${getExamples(word)
+        .map(
+          (example, index) => `
+            <div class="example-item ${state.openExampleIndex === index ? 'open' : ''}">
+              <button class="example-main" type="button" data-action="toggle-example" data-example-index="${index}">
+                <small>${example.label}</small>
+                <strong>${escapeHtml(example.en)}</strong>
+                ${state.openExampleIndex === index ? `<span>${escapeHtml(example.zh)}</span>` : ''}
+              </button>
+              <button class="example-speak" type="button" data-action="speak-example" data-example-index="${index}" aria-label="播放例句 ${index + 1}">
+                ${icon('volume')}
+              </button>
+            </div>
+          `,
+        )
+        .join('')}
+    </div>
   `;
 }
 
@@ -276,6 +311,16 @@ function renderProfile() {
         <div>${icon('chart')}<strong>${state.progress.known.length}</strong><span>已掌握</span></div>
         <div>${icon('star')}<strong>${state.progress.unsure.length}</strong><span>待复习</span></div>
       </div>
+      <div class="backup-panel">
+        <h3>进度备份</h3>
+        <p>导出文件可以保存到 iCloud、微信文件或电脑。换手机、清理浏览器后，用导入恢复。</p>
+        <div class="backup-actions">
+          <button class="backup-button" type="button" data-action="export-progress">${icon('download')} 导出进度</button>
+          <button class="backup-button" type="button" data-action="import-progress">${icon('upload')} 导入进度</button>
+        </div>
+        <input class="file-input" type="file" accept="application/json,.json" data-action="import-file" />
+        ${state.notice ? `<div class="notice">${escapeHtml(state.notice)}</div>` : ''}
+      </div>
       <button class="danger-button" type="button" data-action="reset">清空进度</button>
     </section>
   `;
@@ -297,22 +342,72 @@ function testOptions(word) {
     .sort((a, b) => a.word.localeCompare(b.word));
 }
 
-function makeExample(word) {
-  const examples = {
-    come: 'Come here, please.',
-    get: 'I get a book.',
-    give: 'Give me a cup.',
-    go: 'We go home.',
-    water: 'The water is cold.',
-    apple: 'The apple is red.',
-  };
-  return examples[word] || `This word is "${word}".`;
+const exampleBank = {
+  come: [
+    { label: '基础理解', en: 'Come here, please.', zh: '请到这里来。' },
+    { label: '生活场景', en: 'I come to this place every morning.', zh: '我每天早上来这个地方。' },
+    { label: '问句练习', en: 'Did he come with you?', zh: '他和你一起来了吗？' },
+    { label: '常见搭配', en: 'Come in and sit down.', zh: '进来坐下。' },
+    { label: '对比感知', en: 'Come here, not go there.', zh: '到这里来，不是去那里。' },
+  ],
+  get: [
+    { label: '基础理解', en: 'I get a book.', zh: '我拿到一本书。' },
+    { label: '生活场景', en: 'Get your coat before we go.', zh: '我们走之前把你的外套拿上。' },
+    { label: '问句练习', en: 'Did you get my note?', zh: '你收到我的留言了吗？' },
+    { label: '常见搭配', en: 'Get ready for the test.', zh: '为测试做好准备。' },
+    { label: '对比感知', en: 'Get the cup, then give it to me.', zh: '先拿杯子，然后把它给我。' },
+  ],
+  give: [
+    { label: '基础理解', en: 'Give me a cup.', zh: '给我一个杯子。' },
+    { label: '生活场景', en: 'She gives help to her friend.', zh: '她帮助她的朋友。' },
+    { label: '问句练习', en: 'Can you give him the letter?', zh: '你能把信给他吗？' },
+    { label: '常见搭配', en: 'Give your answer clearly.', zh: '清楚地给出你的回答。' },
+    { label: '对比感知', en: 'Give more, take less.', zh: '多给予，少索取。' },
+  ],
+  go: [
+    { label: '基础理解', en: 'We go home.', zh: '我们回家。' },
+    { label: '生活场景', en: 'I go to school by bus.', zh: '我坐公交去学校。' },
+    { label: '问句练习', en: 'Where do you go after work?', zh: '你下班后去哪里？' },
+    { label: '常见搭配', en: 'Go on with your reading.', zh: '继续你的阅读。' },
+    { label: '对比感知', en: 'Go there, then come back.', zh: '去那里，然后回来。' },
+  ],
+  water: [
+    { label: '基础理解', en: 'The water is cold.', zh: '水是凉的。' },
+    { label: '生活场景', en: 'I drink water after a walk.', zh: '散步后我喝水。' },
+    { label: '问句练习', en: 'Is there water in the bottle?', zh: '瓶子里有水吗？' },
+    { label: '常见搭配', en: 'Clean water is important.', zh: '干净的水很重要。' },
+    { label: '对比感知', en: 'Water is clear, but milk is white.', zh: '水是清澈的，但牛奶是白色的。' },
+  ],
+  apple: [
+    { label: '基础理解', en: 'The apple is red.', zh: '这个苹果是红色的。' },
+    { label: '生活场景', en: 'I have an apple for breakfast.', zh: '我早餐吃一个苹果。' },
+    { label: '问句练习', en: 'Do you want this apple?', zh: '你想要这个苹果吗？' },
+    { label: '常见搭配', en: 'Cut the apple into small parts.', zh: '把苹果切成小块。' },
+    { label: '对比感知', en: 'An apple is fruit, not bread.', zh: '苹果是水果，不是面包。' },
+  ],
+};
+
+function getExamples(item) {
+  const word = item.speakWord;
+  if (exampleBank[word]) return exampleBank[word];
+  const meaning = item.zh.includes('词') ? item.word : item.zh;
+  return [
+    { label: '基础理解', en: `This word is "${word}".`, zh: `这个词是“${meaning}”。` },
+    { label: '生活场景', en: `I use "${word}" in a simple sentence.`, zh: `我把“${meaning}”放进一个简单句子里使用。` },
+    { label: '问句练习', en: `Can you say "${word}" again?`, zh: `你能再说一遍“${meaning}”吗？` },
+    { label: '常见搭配', en: `The word "${word}" is useful.`, zh: `“${meaning}”这个词很有用。` },
+    { label: '对比感知', en: `Learn "${word}" today, and review it tomorrow.`, zh: `今天学习“${meaning}”，明天再复习它。` },
+  ];
 }
 
 function speak(item = activeWord()) {
+  speakText(item.speakWord);
+}
+
+function speakText(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(item.speakWord);
+  const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = state.progress.accent;
   utterance.rate = 0.82;
   utterance.pitch = 1;
@@ -333,8 +428,8 @@ function updateWord(id, status) {
     known.delete(id);
   }
   if (status === 'clear') {
-    known.delete(id);
     unsure.delete(id);
+    known.delete(id);
   }
   state.progress.known = [...known];
   state.progress.unsure = [...unsure];
@@ -344,6 +439,45 @@ function updateWord(id, status) {
 function nextWord() {
   state.currentIndex = (state.currentIndex + 1) % Math.max(activeList().length, 1);
   state.testChoiceId = null;
+  state.openExampleIndex = null;
+}
+
+function exportProgress() {
+  const payload = {
+    app: 'Basic 850',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    progress: state.progress,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `basic-850-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  state.notice = '进度已导出，请把 JSON 文件保存好。';
+}
+
+function importProgress(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const payload = JSON.parse(reader.result);
+      const incoming = normalizeProgress(payload.progress || payload);
+      state.progress = incoming;
+      state.notice = '进度已导入并保存。';
+      saveProgress();
+      render();
+    } catch {
+      state.notice = '导入失败：请选择 Basic 850 导出的 JSON 文件。';
+      render();
+    }
+  };
+  reader.readAsText(file);
 }
 
 root.addEventListener('click', (event) => {
@@ -355,15 +489,28 @@ root.addEventListener('click', (event) => {
     state.tab = button.dataset.tab;
     state.currentIndex = 0;
     state.testChoiceId = null;
+    state.openExampleIndex = null;
   }
   if (action === 'group') {
     state.groupId = button.dataset.groupId;
     state.currentIndex = 0;
+    state.openExampleIndex = null;
   }
-  if (action === 'select-word') state.currentIndex = Number(button.dataset.index || 0);
+  if (action === 'select-word') {
+    state.currentIndex = Number(button.dataset.index || 0);
+    state.openExampleIndex = null;
+  }
   if (action === 'speak') {
     const item = words.find((word) => word.id === button.dataset.wordId) || activeWord();
     speak(item);
+  }
+  if (action === 'toggle-example') {
+    const index = Number(button.dataset.exampleIndex || 0);
+    state.openExampleIndex = state.openExampleIndex === index ? null : index;
+  }
+  if (action === 'speak-example') {
+    const example = getExamples(activeWord())[Number(button.dataset.exampleIndex || 0)];
+    if (example) speakText(example.en);
   }
   if (action === 'known') updateWord(activeWord().id, 'known');
   if (action === 'unsure') updateWord(activeWord().id, 'unsure');
@@ -375,21 +522,31 @@ root.addEventListener('click', (event) => {
   }
   if (action === 'reset') {
     state.progress = { known: [], unsure: [], accent: state.progress.accent };
+    state.notice = '进度已清空。';
     saveProgress();
   }
   if (action === 'next') nextWord();
+  if (action === 'export-progress') exportProgress();
+  if (action === 'import-progress') root.querySelector('[data-action="import-file"]')?.click();
 
-  if (action !== 'speak' && action !== 'noop') render();
+  if (!['speak', 'speak-example', 'noop', 'import-progress'].includes(action)) render();
 });
 
 root.addEventListener('input', (event) => {
   if (event.target.dataset.action !== 'search') return;
   state.query = event.target.value;
   state.currentIndex = 0;
+  state.openExampleIndex = null;
   render();
   const input = root.querySelector('[data-action="search"]');
   input?.focus();
   input?.setSelectionRange(state.query.length, state.query.length);
+});
+
+root.addEventListener('change', (event) => {
+  if (event.target.dataset.action !== 'import-file') return;
+  importProgress(event.target.files?.[0]);
+  event.target.value = '';
 });
 
 function syncVoices() {

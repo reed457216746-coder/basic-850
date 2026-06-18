@@ -66,7 +66,9 @@ button {
   position: relative;
   width: min(100vw, 402px);
   min-height: min(874px, 100svh);
-  overflow: hidden;
+  max-height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: max(18px, env(safe-area-inset-top)) 16px calc(84px + env(safe-area-inset-bottom));
   background: #f8fbf7;
   border: 1px solid rgba(41, 72, 53, 0.08);
@@ -314,6 +316,80 @@ button {
   font-weight: 700;
 }
 
+.examples-panel {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.examples-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #425047;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.example-item {
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.example-main,
+.example-speak {
+  border: 0;
+  border-radius: 14px;
+  background: #f0f5f1;
+  color: #26352c;
+}
+
+.example-main {
+  min-width: 0;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.example-main small,
+.example-main span {
+  display: block;
+}
+
+.example-main small {
+  margin-bottom: 4px;
+  color: #758378;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.example-main strong {
+  display: block;
+  color: #223129;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.example-main span {
+  margin-top: 7px;
+  color: #55645b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.example-item.open .example-main {
+  background: #e8f4ed;
+}
+
+.example-speak {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  color: #237ad3;
+  font-size: 18px;
+}
+
 .action-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -484,6 +560,61 @@ button {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 12px;
+}
+
+.backup-panel {
+  margin-top: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(35, 74, 51, 0.08);
+  border-radius: 22px;
+}
+
+.backup-panel h3 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.backup-panel p {
+  margin: 8px 0 12px;
+  color: #677469;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.backup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.backup-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 15px;
+  color: #145d42;
+  background: #e9f7ef;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.file-input {
+  display: none;
+}
+
+.notice {
+  margin-top: 10px;
+  padding: 9px 10px;
+  color: #1e5b43;
+  background: #eef8f2;
+  border-radius: 13px;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .profile-grid div {
