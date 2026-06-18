@@ -49,6 +49,7 @@ function normalizeProgress(progress = {}) {
     known: Array.isArray(progress.known) ? progress.known.filter(Boolean) : [],
     unsure: Array.isArray(progress.unsure) ? progress.unsure.filter(Boolean) : [],
     accent: progress.accent === 'en-GB' ? 'en-GB' : 'en-US',
+    soundEnabled: progress.soundEnabled !== false,
   };
 }
 
@@ -108,6 +109,56 @@ function selectedVoice() {
 
 function voiceName() {
   return selectedVoice()?.name || '系统语音';
+}
+
+let audioContext;
+
+function getAudioContext() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return null;
+  if (!audioContext) audioContext = new AudioContextClass();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  return audioContext;
+}
+
+function playTone(ctx, { start, frequency, duration, type = 'sine', gain = 0.045 }) {
+  const oscillator = ctx.createOscillator();
+  const volume = ctx.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, start);
+  volume.gain.setValueAtTime(0.0001, start);
+  volume.gain.exponentialRampToValueAtTime(gain, start + 0.012);
+  volume.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  oscillator.connect(volume).connect(ctx.destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration + 0.015);
+}
+
+function playSound(kind) {
+  if (!state.progress.soundEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const patterns = {
+    known: [
+      { start: now, frequency: 660, duration: 0.07 },
+      { start: now + 0.065, frequency: 880, duration: 0.09 },
+    ],
+    unsure: [{ start: now, frequency: 330, duration: 0.08, type: 'triangle', gain: 0.032 }],
+    reveal: [{ start: now, frequency: 520, duration: 0.045, type: 'triangle', gain: 0.03 }],
+    correct: [
+      { start: now, frequency: 740, duration: 0.06 },
+      { start: now + 0.055, frequency: 990, duration: 0.12 },
+    ],
+    wrong: [{ start: now, frequency: 220, duration: 0.11, type: 'triangle', gain: 0.026 }],
+    milestone: [
+      { start: now, frequency: 660, duration: 0.07 },
+      { start: now + 0.065, frequency: 880, duration: 0.08 },
+      { start: now + 0.135, frequency: 1175, duration: 0.13 },
+    ],
+    toggle: [{ start: now, frequency: 470, duration: 0.05, type: 'triangle', gain: 0.026 }],
+  };
+  (patterns[kind] || []).forEach((tone) => playTone(ctx, tone));
 }
 
 function render() {
@@ -308,6 +359,15 @@ function renderProfile() {
       <div class="accent-switch">
         ${renderAccent('en-US', '美音')}
         ${renderAccent('en-GB', '英音')}
+      </div>
+      <div class="sound-panel">
+        <div>
+          ${icon('volume')}
+          <span>学习音效</span>
+        </div>
+        <button class="${state.progress.soundEnabled ? 'active' : ''}" type="button" data-action="toggle-sound" aria-pressed="${state.progress.soundEnabled}">
+          ${state.progress.soundEnabled ? '开启' : '关闭'}
+        </button>
       </div>
       <div class="profile-grid">
         <div>${icon('chart')}<strong>${state.progress.known.length}</strong><span>已掌握</span></div>
@@ -860,7 +920,13 @@ function updateWord(id, status) {
 
 function markAndAdvance(status) {
   const currentId = activeWord().id;
+  const knownBefore = knownSet().size;
   updateWord(currentId, status);
+  if (status === 'known') {
+    const knownAfter = knownSet().size;
+    playSound(knownAfter > knownBefore && knownAfter % 5 === 0 ? 'milestone' : 'known');
+  }
+  if (status === 'unsure') playSound('unsure');
   if (state.tab === 'review') {
     const list = reviewWords();
     state.currentIndex = list.length ? state.currentIndex % list.length : 0;
@@ -880,7 +946,8 @@ function toggleExample(button) {
   const scroller = root.querySelector('.scroll-content');
   const scrollTop = scroller?.scrollTop || 0;
   const index = Number(button.dataset.exampleIndex || 0);
-  state.openExampleIndex = state.openExampleIndex === index ? null : index;
+  const willOpen = state.openExampleIndex !== index;
+  state.openExampleIndex = willOpen ? index : null;
 
   root.querySelectorAll('.example-item').forEach((item, itemIndex) => {
     const isOpen = itemIndex === state.openExampleIndex;
@@ -892,6 +959,7 @@ function toggleExample(button) {
   requestAnimationFrame(() => {
     if (scroller) scroller.scrollTop = scrollTop;
   });
+  return willOpen;
 }
 
 function exportProgress() {
@@ -962,7 +1030,7 @@ root.addEventListener('click', (event) => {
       state.ignoreToggleClick = false;
       return;
     }
-    toggleExample(button);
+    if (toggleExample(button)) playSound('reveal');
     return;
   }
   if (action === 'speak-example') {
@@ -972,13 +1040,21 @@ root.addEventListener('click', (event) => {
   if (action === 'known') markAndAdvance('known');
   if (action === 'unsure') markAndAdvance('unsure');
   if (action === 'clear') updateWord(activeWord().id, 'clear');
-  if (action === 'choice') state.testChoiceId = button.dataset.choiceId;
+  if (action === 'choice') {
+    state.testChoiceId = button.dataset.choiceId;
+    playSound(state.testChoiceId === activeWord().id ? 'correct' : 'wrong');
+  }
   if (action === 'accent') {
     state.progress.accent = button.dataset.accent;
     saveProgress();
   }
+  if (action === 'toggle-sound') {
+    state.progress.soundEnabled = !state.progress.soundEnabled;
+    saveProgress();
+    if (state.progress.soundEnabled) playSound('toggle');
+  }
   if (action === 'reset') {
-    state.progress = { known: [], unsure: [], accent: state.progress.accent };
+    state.progress = { known: [], unsure: [], accent: state.progress.accent, soundEnabled: state.progress.soundEnabled };
     state.notice = '进度已清空。';
     saveProgress();
   }
@@ -996,7 +1072,7 @@ root.addEventListener(
     if (!button) return;
     event.preventDefault();
     state.ignoreToggleClick = true;
-    toggleExample(button);
+    if (toggleExample(button)) playSound('reveal');
   },
   { passive: false },
 );

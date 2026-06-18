@@ -581,6 +581,44 @@ button {
   opacity: 0.72;
 }
 
+.sound-panel {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(35, 74, 51, 0.08);
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.sound-panel div {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #1a2a21;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.sound-panel button {
+  min-width: 72px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 999px;
+  color: #607167;
+  background: #edf4ef;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sound-panel button.active {
+  color: #ffffff;
+  background: #1d7a58;
+}
+
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
