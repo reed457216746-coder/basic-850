@@ -81,7 +81,9 @@ button {
   padding: 0 16px 118px;
   overflow-x: hidden;
   overflow-y: auto;
+  overflow-anchor: none;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
 
@@ -345,6 +347,7 @@ button {
   grid-template-columns: 1fr 40px;
   gap: 8px;
   align-items: stretch;
+  overflow-anchor: none;
 }
 
 .example-main,
@@ -359,6 +362,11 @@ button {
   min-width: 0;
   padding: 10px 12px;
   text-align: left;
+  touch-action: manipulation;
+}
+
+.example-main:focus {
+  outline: 0;
 }
 
 .example-main small,

@@ -10,6 +10,7 @@ const state = {
   query: '',
   testChoiceId: null,
   openExampleIndex: null,
+  ignoreToggleClick: false,
   voices: [],
   notice: '',
   progress: readProgress(),
@@ -220,7 +221,7 @@ function renderExamples(word) {
         .map(
           (example, index) => `
             <div class="example-item ${state.openExampleIndex === index ? 'open' : ''}">
-              <button class="example-main" type="button" data-action="toggle-example" data-example-index="${index}">
+              <button class="example-main" type="button" data-action="toggle-example" data-example-index="${index}" aria-expanded="${state.openExampleIndex === index}">
                 <small>${example.label}</small>
                 <strong>${escapeHtml(example.en)}</strong>
                 <span>${escapeHtml(example.zh)}</span>
@@ -388,17 +389,141 @@ const exampleBank = {
   ],
 };
 
+const operationExampleBank = {
+  about: [
+    { label: '基础理解', en: 'This book is about animals.', zh: '这本书是关于动物的。' },
+    { label: '生活场景', en: 'We talked about the weather.', zh: '我们聊了天气。' },
+    { label: '问句练习', en: 'What is the story about?', zh: '这个故事是关于什么的？' },
+    { label: '常见搭配', en: 'Think about your answer first.', zh: '先想一想你的答案。' },
+    { label: '对比感知', en: 'I know about it, but I do not know it well.', zh: '我知道这件事，但并不了解得很深。' },
+  ],
+  across: [
+    { label: '基础理解', en: 'We walked across the bridge.', zh: '我们走过了那座桥。' },
+    { label: '生活场景', en: 'The shop is across the street.', zh: '商店在街对面。' },
+    { label: '问句练习', en: 'Can you swim across the river?', zh: '你能游过这条河吗？' },
+    { label: '常见搭配', en: 'She looked across the room.', zh: '她看向房间的另一边。' },
+    { label: '对比感知', en: 'Across means from one side to the other.', zh: 'across 表示从一边到另一边。' },
+  ],
+  after: [
+    { label: '基础理解', en: 'We eat after school.', zh: '我们放学后吃饭。' },
+    { label: '生活场景', en: 'Call me after dinner.', zh: '晚饭后给我打电话。' },
+    { label: '问句练习', en: 'What do you do after work?', zh: '你下班后做什么？' },
+    { label: '常见搭配', en: 'After a long day, I need rest.', zh: '漫长的一天之后，我需要休息。' },
+    { label: '对比感知', en: 'After is later; before is earlier.', zh: 'after 是之后，before 是之前。' },
+  ],
+  against: [
+    { label: '基础理解', en: 'Put the chair against the wall.', zh: '把椅子靠墙放。' },
+    { label: '生活场景', en: 'The rain hit against the window.', zh: '雨打在窗户上。' },
+    { label: '问句练习', en: 'Are you against this plan?', zh: '你反对这个计划吗？' },
+    { label: '常见搭配', en: 'We must guard against danger.', zh: '我们必须防范危险。' },
+    { label: '对比感知', en: 'Against can mean touching or opposing.', zh: 'against 可以表示靠着，也可以表示反对。' },
+  ],
+  among: [
+    { label: '基础理解', en: 'The child stood among the trees.', zh: '那个孩子站在树丛中。' },
+    { label: '生活场景', en: 'She found her key among the papers.', zh: '她在一堆纸中找到了钥匙。' },
+    { label: '问句练习', en: 'Who is among the group?', zh: '谁在这个群体里？' },
+    { label: '常见搭配', en: 'This idea is popular among students.', zh: '这个想法在学生中很受欢迎。' },
+    { label: '对比感知', en: 'Among is for a group; between is often for two.', zh: 'among 用于一群之中；between 常用于两者之间。' },
+  ],
+  before: [
+    { label: '基础理解', en: 'Wash your hands before dinner.', zh: '晚饭前洗手。' },
+    { label: '生活场景', en: 'I read before sleep.', zh: '我睡前读书。' },
+    { label: '问句练习', en: 'Did you call before you came?', zh: '你来之前打电话了吗？' },
+    { label: '常见搭配', en: 'Before noon, the room was quiet.', zh: '中午前，房间很安静。' },
+    { label: '对比感知', en: 'Before is earlier; after is later.', zh: 'before 是之前，after 是之后。' },
+  ],
+  between: [
+    { label: '基础理解', en: 'The table is between two chairs.', zh: '桌子在两把椅子之间。' },
+    { label: '生活场景', en: 'I sit between my friends.', zh: '我坐在朋友们中间。' },
+    { label: '问句练习', en: 'What is between the door and the window?', zh: '门和窗之间是什么？' },
+    { label: '常见搭配', en: 'Keep this between you and me.', zh: '这件事只在你我之间。' },
+    { label: '对比感知', en: 'Between shows a position with clear sides.', zh: 'between 表示处在明确的两边之间。' },
+  ],
+  through: [
+    { label: '基础理解', en: 'The train went through the tunnel.', zh: '火车穿过了隧道。' },
+    { label: '生活场景', en: 'We walked through the park.', zh: '我们穿过公园。' },
+    { label: '问句练习', en: 'Can light pass through glass?', zh: '光能穿过玻璃吗？' },
+    { label: '常见搭配', en: 'Read through the list first.', zh: '先把清单通读一遍。' },
+    { label: '对比感知', en: 'Through means going inside and out the other side.', zh: 'through 表示进入内部并从另一边出来。' },
+  ],
+  under: [
+    { label: '基础理解', en: 'The cat is under the table.', zh: '猫在桌子下面。' },
+    { label: '生活场景', en: 'Put the bag under your chair.', zh: '把包放在你的椅子下面。' },
+    { label: '问句练习', en: 'Is the key under the book?', zh: '钥匙在书下面吗？' },
+    { label: '常见搭配', en: 'The road is under repair.', zh: '这条路正在维修中。' },
+    { label: '对比感知', en: 'Under is below; over is above.', zh: 'under 是在下面，over 是在上方。' },
+  ],
+  over: [
+    { label: '基础理解', en: 'The bird flew over the house.', zh: '鸟飞过房子上方。' },
+    { label: '生活场景', en: 'Put the coat over the chair.', zh: '把外套搭在椅子上。' },
+    { label: '问句练习', en: 'Can you jump over the line?', zh: '你能跳过这条线吗？' },
+    { label: '常见搭配', en: 'The meeting is over.', zh: '会议结束了。' },
+    { label: '对比感知', en: 'Over can mean above or finished.', zh: 'over 可以表示在上方，也可以表示结束。' },
+  ],
+  with: [
+    { label: '基础理解', en: 'I went with my brother.', zh: '我和哥哥一起去了。' },
+    { label: '生活场景', en: 'Eat bread with butter.', zh: '面包配黄油吃。' },
+    { label: '问句练习', en: 'Who is with you?', zh: '谁和你在一起？' },
+    { label: '常见搭配', en: 'Write with a pencil.', zh: '用铅笔写。' },
+    { label: '对比感知', en: 'With shows togetherness or a tool.', zh: 'with 表示一起，也可以表示使用工具。' },
+  ],
+};
+
+const prepositionScenes = {
+  at: ['Meet me at the door.', '在门口见我。'],
+  by: ['The cup is by the window.', '杯子在窗边。'],
+  down: ['Walk down the road.', '沿着这条路往下走。'],
+  from: ['This letter is from my mother.', '这封信来自我妈妈。'],
+  in: ['The key is in my pocket.', '钥匙在我的口袋里。'],
+  off: ['Take your coat off.', '把你的外套脱掉。'],
+  on: ['The book is on the table.', '书在桌子上。'],
+  to: ['Give the letter to her.', '把信给她。'],
+  up: ['Look up at the sky.', '抬头看天空。'],
+  for: ['This seat is for you.', '这个座位是给你的。'],
+  of: ['A cup of water is on the table.', '一杯水在桌上。'],
+  till: ['Wait till tomorrow.', '等到明天。'],
+  than: ['This road is longer than that one.', '这条路比那条路长。'],
+  as: ['Use this room as an office.', '把这个房间当作办公室用。'],
+};
+
+function articleFor(word) {
+  return /^[aeiou]/i.test(word) ? 'an' : 'a';
+}
+
+function simpleOperationExamples(word, meaning) {
+  if (prepositionScenes[word]) {
+    const [en, zh] = prepositionScenes[word];
+    return [
+      { label: '基础理解', en, zh },
+      { label: '生活场景', en: `I use ${word} in everyday speech.`, zh: `我会在日常表达里用到“${meaning}”。` },
+      { label: '问句练习', en: `Can you make a sentence with ${word}?`, zh: `你能用“${meaning}”造一个句子吗？` },
+      { label: '常见搭配', en: en.replace('.', ' today.'), zh: `${zh.replace('。', '')}，就在今天。` },
+      { label: '对比感知', en: `${word} changes the relation between two ideas.`, zh: `“${meaning}”会改变两个意思之间的关系。` },
+    ];
+  }
+  return [
+    { label: '基础理解', en: `I can use ${word} in a real sentence.`, zh: `我能在真实句子里使用“${meaning}”。` },
+    { label: '生活场景', en: `People often use ${word} when they speak simply.`, zh: `人们说简单英语时常会用到“${meaning}”。` },
+    { label: '问句练习', en: `Where does ${word} fit in this sentence?`, zh: `“${meaning}”在这个句子里放在哪里？` },
+    { label: '常见搭配', en: `${word} helps the sentence show a clear relation.`, zh: `“${meaning}”帮助句子表达清楚的关系。` },
+    { label: '对比感知', en: `Change ${word}, and the sentence may change meaning.`, zh: `换掉“${meaning}”，句子的意思可能会变。` },
+  ];
+}
+
 function getExamples(item) {
   const word = item.speakWord;
   if (exampleBank[word]) return exampleBank[word];
+  if (operationExampleBank[word]) return operationExampleBank[word];
   const meaning = item.zh.includes('词') ? item.word : item.zh;
+  if (item.groupId === 'operations') return simpleOperationExamples(word, meaning);
   if (item.groupId === 'things' || item.groupId === 'pictured') {
+    const article = articleFor(word);
     return [
-      { label: '基础理解', en: `This ${word} is useful.`, zh: `这个“${meaning}”很有用。` },
-      { label: '生活场景', en: `I see the ${word} every day.`, zh: `我每天都会看到这个“${meaning}”。` },
-      { label: '问句练习', en: `Where is the ${word}?`, zh: `这个“${meaning}”在哪里？` },
-      { label: '常见搭配', en: `Put the ${word} on the table.`, zh: `把这个“${meaning}”放在桌子上。` },
-      { label: '对比感知', en: `This is ${word}, not another thing.`, zh: `这是“${meaning}”，不是别的东西。` },
+      { label: '基础理解', en: `The ${word} is important here.`, zh: `这个“${meaning}”在这里很重要。` },
+      { label: '生活场景', en: `I noticed ${article} ${word} today.`, zh: `我今天注意到了一个“${meaning}”。` },
+      { label: '问句练习', en: `Where did you find the ${word}?`, zh: `你在哪里找到这个“${meaning}”？` },
+      { label: '常见搭配', en: `We talked about the ${word} for a minute.`, zh: `我们聊了一会儿这个“${meaning}”。` },
+      { label: '对比感知', en: `This ${word} is different from the other one.`, zh: `这个“${meaning}”和另一个不一样。` },
     ];
   }
   if (item.groupId === 'qualities' || item.groupId === 'opposites') {
@@ -473,6 +598,24 @@ function nextWord() {
   state.openExampleIndex = null;
 }
 
+function toggleExample(button) {
+  const scroller = root.querySelector('.scroll-content');
+  const scrollTop = scroller?.scrollTop || 0;
+  const index = Number(button.dataset.exampleIndex || 0);
+  state.openExampleIndex = state.openExampleIndex === index ? null : index;
+
+  root.querySelectorAll('.example-item').forEach((item, itemIndex) => {
+    const isOpen = itemIndex === state.openExampleIndex;
+    item.classList.toggle('open', isOpen);
+    item.querySelector('.example-main')?.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  button.blur();
+  requestAnimationFrame(() => {
+    if (scroller) scroller.scrollTop = scrollTop;
+  });
+}
+
 function exportProgress() {
   const payload = {
     app: 'Basic 850',
@@ -536,8 +679,13 @@ root.addEventListener('click', (event) => {
     speak(item);
   }
   if (action === 'toggle-example') {
-    const index = Number(button.dataset.exampleIndex || 0);
-    state.openExampleIndex = state.openExampleIndex === index ? null : index;
+    event.preventDefault();
+    if (state.ignoreToggleClick) {
+      state.ignoreToggleClick = false;
+      return;
+    }
+    toggleExample(button);
+    return;
   }
   if (action === 'speak-example') {
     const example = getExamples(activeWord())[Number(button.dataset.exampleIndex || 0)];
@@ -562,6 +710,18 @@ root.addEventListener('click', (event) => {
 
   if (!['speak', 'speak-example', 'noop', 'import-progress'].includes(action)) render();
 });
+
+root.addEventListener(
+  'pointerdown',
+  (event) => {
+    const button = event.target.closest('[data-action="toggle-example"]');
+    if (!button) return;
+    event.preventDefault();
+    state.ignoreToggleClick = true;
+    toggleExample(button);
+  },
+  { passive: false },
+);
 
 root.addEventListener('input', (event) => {
   if (event.target.dataset.action !== 'search') return;
